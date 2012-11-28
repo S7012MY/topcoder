@@ -1,0 +1,9 @@
+<Category>
+	<Category Name="dst">
+		<Snippet Name="mht">int mht(int x1,int y1, int x2, int y2) {
+		return abs(x2-x1)+abs(y2-y1);
+	}</Snippet>	</Category>
+	<Category Name="vct">
+		<Snippet Name="vct_dir_NESV">const int dx[]={ 0,1, 0,-1},
+		  dy[]={ 1,0,-1, 0};</Snippet>	</Category>
+</Category>
