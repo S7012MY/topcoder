@@ -28,14 +28,15 @@ typedef vector<int>::iterator it;
 typedef set<int>::iterator is;
 
 struct <%:class-name%> {
-	<%:return-type%> <%:method-name%>(<%:param-list%>) {
-		<%:return-type%> rez;
-		return rez;
-	}
+  <%:return-type%> <%:method-name%>(<%:param-list%>) {
+    <%:return-type%> rez;
+	return rez;
+  }
 };
 
 <%:testing-code%>
 //Powered by [KawigiEdit] 2.0!
+
 
 
 
