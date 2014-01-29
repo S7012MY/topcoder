@@ -26,47 +26,21 @@
 #define LL long long
 #define DN 55
 #define DNN 55*55
-#define MOD 1000000007
 using namespace std;
 
 typedef pair<int, int> per; 
 typedef vector<int>::iterator it; 
 typedef set<int>::iterator is; 
 
-int npos[3000][3000];
-
-struct WinterAndSnowmen {
-    int getNumber(int N, int M) {
-	   int rez=0,xmax=0;
-       memset(npos,0,sizeof(npos));
-       npos[0][0]=1;
-       for(int i=1; i<=min(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2) {
-                npos[x1^i][x2]+=npos[x1][x2];
-                npos[x1][x2^i]+=npos[x1][x2];
-                if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
-            }
-        for(int i=min(N,M)+1; i<=max(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2)
-                if(N<M) {
-                    npos[x1][x2^i]+=npos[x1][x2];
-                    if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
-                }
-                else {
-                    npos[x1^i][x2]+=npos[x1][x2];
-                    if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                }
-        for(int x1=0; x1<2050; ++x1) for(int x2=x1+1; x2<2050; ++x2) {
-            rez+=npos[x1][x2];
-            if(rez>=MOD) rez-=MOD;
-        }
+struct PilingRectsDiv1 {
+    long long getmax(int N, vector<int> XS, vector<int> YS, int XA, int XB, int XC, int YA, int YB, int YC) {
+	   long long rez=0;
        return rez;
     }
 };
 
 // CUT begin
-ifstream data("WinterAndSnowmen.sample");
+ifstream data("PilingRectsDiv1.sample");
 
 string next_line() {
     string s;
@@ -83,6 +57,17 @@ void from_stream(string &s) {
     s = next_line();
 }
 
+template <typename T> void from_stream(vector<T> &ts) {
+    int len;
+    from_stream(len);
+    ts.clear();
+    for (int i = 0; i < len; ++i) {
+        T t;
+        from_stream(t);
+        ts.push_back(t);
+    }
+}
+
 template <typename T>
 string to_string(T t) {
     stringstream s;
@@ -94,10 +79,10 @@ string to_string(string t) {
     return "\"" + t + "\"";
 }
 
-bool do_test(int N, int M, int __expected) {
+bool do_test(int N, vector<int> XS, vector<int> YS, int XA, int XB, int XC, int YA, int YB, int YC, long long __expected) {
     time_t startClock = clock();
-    WinterAndSnowmen *instance = new WinterAndSnowmen();
-    int __result = instance->getNumber(N, M);
+    PilingRectsDiv1 *instance = new PilingRectsDiv1();
+    long long __result = instance->getmax(N, XS, YS, XA, XB, XC, YA, YB, YC);
     double elapsed = (double)(clock() - startClock) / CLOCKS_PER_SEC;
     delete instance;
 
@@ -120,10 +105,24 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
             break;
         int N;
         from_stream(N);
-        int M;
-        from_stream(M);
+        vector<int> XS;
+        from_stream(XS);
+        vector<int> YS;
+        from_stream(YS);
+        int XA;
+        from_stream(XA);
+        int XB;
+        from_stream(XB);
+        int XC;
+        from_stream(XC);
+        int YA;
+        from_stream(YA);
+        int YB;
+        from_stream(YB);
+        int YC;
+        from_stream(YC);
         next_line();
-        int __answer;
+        long long __answer;
         from_stream(__answer);
 
         cases++;
@@ -131,16 +130,16 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
             continue;
 
         cout << "  Testcase #" << cases - 1 << " ... ";
-        if ( do_test(N, M, __answer)) {
+        if ( do_test(N, XS, YS, XA, XB, XC, YA, YB, YC, __answer)) {
             passed++;
         }
     }
     if (mainProcess) {
         cout << endl << "Passed : " << passed << "/" << cases << " cases" << endl;
-        int T = time(NULL) - 1387733217;
+        int T = time(NULL) - 1388251935;
         double PT = T / 60.0, TT = 75.0;
         cout << "Time   : " << T / 60 << " minutes " << T % 60 << " secs" << endl;
-        cout << "Score  : " << 500 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
+        cout << "Score  : " << 550 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
     }
     return 0;
 }
@@ -158,7 +157,7 @@ int main(int argc, char *argv[]) {
         }
     }
     if (mainProcess) {
-        cout << "WinterAndSnowmen (500 Points)" << endl << endl;
+        cout << "PilingRectsDiv1 (550 Points)" << endl << endl;
     }
     return run_test(mainProcess, cases, argv[0]);
 }

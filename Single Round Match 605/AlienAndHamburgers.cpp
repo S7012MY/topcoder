@@ -26,47 +26,51 @@
 #define LL long long
 #define DN 55
 #define DNN 55*55
-#define MOD 1000000007
+#define VL 100000
 using namespace std;
 
 typedef pair<int, int> per; 
 typedef vector<int>::iterator it; 
 typedef set<int>::iterator is; 
 
-int npos[3000][3000];
+int nrt[2][10000005];
 
-struct WinterAndSnowmen {
-    int getNumber(int N, int M) {
-	   int rez=0,xmax=0;
-       memset(npos,0,sizeof(npos));
-       npos[0][0]=1;
-       for(int i=1; i<=min(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2) {
-                npos[x1^i][x2]+=npos[x1][x2];
-                npos[x1][x2^i]+=npos[x1][x2];
-                if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
+struct AlienAndHamburgers {
+    int getNumber(vector<int> type, vector<int> taste) {
+	   int rez=0;
+       //memset(nrt,0,sizeof(nrt));
+       vector<per> v;
+       vector<int> maxsums;
+       v.push_back(make_pair(-1000,0));
+       for(int i=0; i<type.size(); ++i) v.push_back(make_pair(type[i],taste[i]));
+        v.push_back(make_pair(1000,0));
+        sort(v.begin(), v.end());
+        int sum=0,sc;
+        for(int i=1; i<v.size(); ++i) {
+            if(v[i].x!=v[i-1].x) {
+                if(sum) maxsums.push_back(sum);
+                sc=v[i].y;
+                sum=sc;
+            }else {
+                sc=max(sc+v[i].y,v[i].y);
+                sum=max(sum,sc);
             }
-        for(int i=min(N,M)+1; i<=max(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2)
-                if(N<M) {
-                    npos[x1][x2^i]+=npos[x1][x2];
-                    if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
-                }
-                else {
-                    npos[x1^i][x2]+=npos[x1][x2];
-                    if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                }
-        for(int x1=0; x1<2050; ++x1) for(int x2=x1+1; x2<2050; ++x2) {
-            rez+=npos[x1][x2];
-            if(rez>=MOD) rez-=MOD;
+            
         }
+        sort(maxsums.rbegin(),maxsums.rend());
+        sum=0;
+        for(int i=0; i<maxsums.size(); ++i) {
+            sum+=maxsums[i];
+            //cout<<maxsums[i]<<' ';
+            rez=max(rez,sum*(i+1));
+        }
+        for(int i=1; i<=50; ++i) cout<<"100000,";
        return rez;
     }
 };
 
 // CUT begin
-ifstream data("WinterAndSnowmen.sample");
+ifstream data("AlienAndHamburgers.sample");
 
 string next_line() {
     string s;
@@ -83,6 +87,17 @@ void from_stream(string &s) {
     s = next_line();
 }
 
+template <typename T> void from_stream(vector<T> &ts) {
+    int len;
+    from_stream(len);
+    ts.clear();
+    for (int i = 0; i < len; ++i) {
+        T t;
+        from_stream(t);
+        ts.push_back(t);
+    }
+}
+
 template <typename T>
 string to_string(T t) {
     stringstream s;
@@ -94,10 +109,10 @@ string to_string(string t) {
     return "\"" + t + "\"";
 }
 
-bool do_test(int N, int M, int __expected) {
+bool do_test(vector<int> type, vector<int> taste, int __expected) {
     time_t startClock = clock();
-    WinterAndSnowmen *instance = new WinterAndSnowmen();
-    int __result = instance->getNumber(N, M);
+    AlienAndHamburgers *instance = new AlienAndHamburgers();
+    int __result = instance->getNumber(type, taste);
     double elapsed = (double)(clock() - startClock) / CLOCKS_PER_SEC;
     delete instance;
 
@@ -118,10 +133,10 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
     while (true) {
         if (next_line().find("--") != 0)
             break;
-        int N;
-        from_stream(N);
-        int M;
-        from_stream(M);
+        vector<int> type;
+        from_stream(type);
+        vector<int> taste;
+        from_stream(taste);
         next_line();
         int __answer;
         from_stream(__answer);
@@ -131,16 +146,16 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
             continue;
 
         cout << "  Testcase #" << cases - 1 << " ... ";
-        if ( do_test(N, M, __answer)) {
+        if ( do_test(type, taste, __answer)) {
             passed++;
         }
     }
     if (mainProcess) {
         cout << endl << "Passed : " << passed << "/" << cases << " cases" << endl;
-        int T = time(NULL) - 1387733217;
+        int T = time(NULL) - 1390305613;
         double PT = T / 60.0, TT = 75.0;
         cout << "Time   : " << T / 60 << " minutes " << T % 60 << " secs" << endl;
-        cout << "Score  : " << 500 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
+        cout << "Score  : " << 250 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
     }
     return 0;
 }
@@ -158,7 +173,7 @@ int main(int argc, char *argv[]) {
         }
     }
     if (mainProcess) {
-        cout << "WinterAndSnowmen (500 Points)" << endl << endl;
+        cout << "AlienAndHamburgers (250 Points)" << endl << endl;
     }
     return run_test(mainProcess, cases, argv[0]);
 }

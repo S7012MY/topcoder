@@ -26,47 +26,67 @@
 #define LL long long
 #define DN 55
 #define DNN 55*55
-#define MOD 1000000007
 using namespace std;
 
 typedef pair<int, int> per; 
 typedef vector<int>::iterator it; 
 typedef set<int>::iterator is; 
 
-int npos[3000][3000];
+// 100110012
+// 221001000
+//1021111012
 
-struct WinterAndSnowmen {
-    int getNumber(int N, int M) {
-	   int rez=0,xmax=0;
-       memset(npos,0,sizeof(npos));
-       npos[0][0]=1;
-       for(int i=1; i<=min(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2) {
-                npos[x1^i][x2]+=npos[x1][x2];
-                npos[x1][x2^i]+=npos[x1][x2];
-                if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
+//001
+//100
+
+struct PowerOfThree {
+    string conv(int n) {
+        string r;
+        for(;n;n/=3) r+=(n%3)+'0';
+        r+='0';
+        return r;
+    }
+    string ableToGet(int x, int y) {
+	   string rez="Possible";
+       x=abs(x); y=abs(y);
+       bitset<55> fol;
+       string a=conv(x),b=conv(y);
+       int am2=-1;
+       for(int i=0; i<a.size(); ++i) {
+            if(a[i]=='2') {
+                if(am2==-1) am2=i;
             }
-        for(int i=min(N,M)+1; i<=max(N,M); ++i) for(int x1=0; x1<2050; ++x1)
-            for(int x2=0; x2<2050; ++x2)
-                if(N<M) {
-                    npos[x1][x2^i]+=npos[x1][x2];
-                    if(npos[x1][x2^i]>=MOD) npos[x1][x2^i]-=MOD;
-                }
-                else {
-                    npos[x1^i][x2]+=npos[x1][x2];
-                    if(npos[x1^i][x2]>=MOD) npos[x1^i][x2]-=MOD;
-                }
-        for(int x1=0; x1<2050; ++x1) for(int x2=x1+1; x2<2050; ++x2) {
-            rez+=npos[x1][x2];
-            if(rez>=MOD) rez-=MOD;
-        }
+            if(a[i]=='1') fol[i]=1;
+            if(a[i]=='0' && am2!=-1) {
+                fol[am2]=1;
+                am2=-1;
+                fol[i]=1;
+            }
+       }
+
+       for(int i=0; i<b.size(); ++i) {
+            if(b[i]=='2') {
+                if(am2==-1) am2=i;
+            }
+            if(b[i]=='1') {
+                if(fol[i]) return "Impossible";
+                fol[i]=1;
+            }
+            if(b[i]=='0' && am2!=-1) {
+                if(fol[i] || fol[am2]) return "Impossible";
+                fol[am2]=1;
+                am2=-1;
+                fol[i]=1;
+            }
+       }
+       for(int i=1; i<50; ++i) if(fol[i] && !fol[i-1]) return "Impossible";
+
        return rez;
     }
 };
 
 // CUT begin
-ifstream data("WinterAndSnowmen.sample");
+ifstream data("PowerOfThree.sample");
 
 string next_line() {
     string s;
@@ -94,10 +114,10 @@ string to_string(string t) {
     return "\"" + t + "\"";
 }
 
-bool do_test(int N, int M, int __expected) {
+bool do_test(int x, int y, string __expected) {
     time_t startClock = clock();
-    WinterAndSnowmen *instance = new WinterAndSnowmen();
-    int __result = instance->getNumber(N, M);
+    PowerOfThree *instance = new PowerOfThree();
+    string __result = instance->ableToGet(x, y);
     double elapsed = (double)(clock() - startClock) / CLOCKS_PER_SEC;
     delete instance;
 
@@ -118,12 +138,12 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
     while (true) {
         if (next_line().find("--") != 0)
             break;
-        int N;
-        from_stream(N);
-        int M;
-        from_stream(M);
+        int x;
+        from_stream(x);
+        int y;
+        from_stream(y);
         next_line();
-        int __answer;
+        string __answer;
         from_stream(__answer);
 
         cases++;
@@ -131,16 +151,16 @@ int run_test(bool mainProcess, const set<int> &case_set, const string command) {
             continue;
 
         cout << "  Testcase #" << cases - 1 << " ... ";
-        if ( do_test(N, M, __answer)) {
+        if ( do_test(x, y, __answer)) {
             passed++;
         }
     }
     if (mainProcess) {
         cout << endl << "Passed : " << passed << "/" << cases << " cases" << endl;
-        int T = time(NULL) - 1387733217;
+        int T = time(NULL) - 1389459607;
         double PT = T / 60.0, TT = 75.0;
         cout << "Time   : " << T / 60 << " minutes " << T % 60 << " secs" << endl;
-        cout << "Score  : " << 500 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
+        cout << "Score  : " << 250 * (0.3 + (0.7 * TT * TT) / (10.0 * PT * PT + TT * TT)) << " points" << endl;
     }
     return 0;
 }
@@ -158,7 +178,7 @@ int main(int argc, char *argv[]) {
         }
     }
     if (mainProcess) {
-        cout << "WinterAndSnowmen (500 Points)" << endl << endl;
+        cout << "PowerOfThree (250 Points)" << endl << endl;
     }
     return run_test(mainProcess, cases, argv[0]);
 }
